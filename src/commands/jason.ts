@@ -4,6 +4,7 @@ import { Command } from "../interfaces/command";
 export const Jason: Command = {
   name: "jason",
   description: "Returns a Jason",
+  // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
     const content = "oLA jason culiao basao";
 
