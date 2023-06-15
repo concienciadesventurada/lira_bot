@@ -1,2 +1,2 @@
-import { Command } from "./command";
+import { Command } from "./interfaces/command";
 export declare const Commands: Command[];

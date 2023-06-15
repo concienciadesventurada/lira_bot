@@ -1,2 +1,2 @@
-import { Command } from "src/command";
+import { Command } from "../interfaces/command";
 export declare const Jason: Command;

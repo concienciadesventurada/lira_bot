@@ -1,5 +1,5 @@
 import { CommandInteraction, Client } from "discord.js";
-import { Command } from "src/command";
+import { Command } from "../interfaces/command";
 
 export const Jason: Command = {
   name: "jason",
