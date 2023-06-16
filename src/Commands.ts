@@ -2,6 +2,7 @@ import { Command } from "./interfaces/command";
 import { Hello } from "./commands/hello";
 import { Jason } from "./commands/jason";
 import { Marco } from "./commands/marco";
+//import { Join } from "./commands/join";
 
 // TODO: Implement proper fs search and return an array
 // TODO: Also... actual useful commands smh
