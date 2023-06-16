@@ -14,6 +14,7 @@ import { createDiscordJSAdapter } from "./adapter";
 //import ready from "./listeners/ready";
 
 // TODO: Refactor project structure
+// TODO: Player states
 
 const player = createAudioPlayer();
 
@@ -27,13 +28,18 @@ const playSong = () => {
   return entersState(player, AudioPlayerStatus.Playing, 5000);
 };
 
+// TODO: Refactor in its own file
 const connectToChannel = async (channel: VoiceBasedChannel) => {
   const connection = joinVoiceChannel({
     channelId: channel.id,
     guildId: channel.guild.id,
     adapterCreator: createDiscordJSAdapter(channel),
+    selfDeaf: false,
+    selfMute: false
   });
 
+  // FIX: It connects but the status is not correctly set so it never plays
+  // FIX: Times out instead of entering idle
   try {
     await entersState(connection, VoiceConnectionStatus.Ready, 30_000);
 
@@ -54,6 +60,7 @@ const client = new Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildVoiceStates,
     GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
   ],
 });
 
@@ -66,19 +73,16 @@ client.on("ready", async () => {
   try {
     await playSong();
     console.log("Song is ready to play!");
-
   } catch (error) {
     console.error(error);
   }
 });
 
-// FIX: Bot not joining and ignoring the -join msg trigger
 // TODO: Refactor and make play command
 client.on("messageCreate", async (message) => {
   if (!message.guild) return;
 
   if (message.content === "-join") {
-    console.log(message);
     const channel = message.member?.voice.channel;
 
     if (channel) {
