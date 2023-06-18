@@ -1,5 +1,10 @@
 import "dotenv/config";
-import { Client, GatewayIntentBits, VoiceBasedChannel } from "discord.js";
+import {
+  Client,
+  GatewayIntentBits,
+  VoiceBasedChannel,
+  Events,
+} from "discord.js";
 import {
   AudioPlayerStatus,
   StreamType,
@@ -11,6 +16,7 @@ import {
 } from "@discordjs/voice";
 import interactionCreate from "./listeners/interactionCreate";
 import { createDiscordJSAdapter } from "./adapter";
+import { Commands } from "./Commands";
 //import ready from "./listeners/ready";
 
 // TODO: Refactor project structure
@@ -35,7 +41,7 @@ const connectToChannel = async (channel: VoiceBasedChannel) => {
     guildId: channel.guild.id,
     adapterCreator: createDiscordJSAdapter(channel),
     selfDeaf: false,
-    selfMute: false
+    selfMute: false,
   });
 
   // FIX: It connects but the status is not correctly set so it never plays
@@ -67,10 +73,11 @@ const client = new Client({
 // TODO: Refactor the awaiting in ready.ts
 //ready(client);
 
-client.on("ready", async () => {
+client.on(Events.ClientReady, async () => {
   console.log("Discord.js client is ready!");
 
   try {
+    await client.application?.commands.set(Commands);
     await playSong();
     console.log("Song is ready to play!");
   } catch (error) {
