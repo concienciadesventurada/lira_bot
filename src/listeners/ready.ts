@@ -1,5 +1,7 @@
 import { Client, Events } from "discord.js";
 import { Commands } from "../Commands";
+import { playSong } from "../utils/play-song";
+import { player } from "../utils/player-native";
 
 export default (client: Client): void => {
   client.on(Events.ClientReady, async () => {
@@ -9,11 +11,10 @@ export default (client: Client): void => {
 
     try {
       await client.application.commands.set(Commands);
-      //await playSong()
+      await playSong(player);
     } catch (err) {
       console.error(err);
     }
-    await client.application.commands.set(Commands);
 
     console.log(`${client.user.username} is online`);
   });

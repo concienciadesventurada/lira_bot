@@ -27,6 +27,8 @@ export const Play: Command = {
     try {
       const link = options[0].value;
 
+      console.log(MusicQueue.queue); // OUTPUT []
+
       if (MusicQueue.length() < MusicQueue.limit && typeof link === "string") {
         MusicQueue.enqueue(link);
         console.log(MusicQueue);
@@ -43,8 +45,6 @@ export const Play: Command = {
         ephemeral: true,
         content: "You must provide a link",
       });
-
     }
-
-  }
+  },
 };
