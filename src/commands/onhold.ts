@@ -15,22 +15,22 @@ export const OnHold: Command = {
       if (MusicQueue.isEmpty()) {
         await interaction.followUp({
           ephemeral: true,
-          content: "No queued songs."
-        })
+          content: "No queued songs.",
+        });
+      } else {
+        // HACK: Ugly solution but prints them as bullet points which is handy
+        // but an array would be far cleaner and readable
+        let songs = "";
+
+        for (const song of MusicQueue.queue) {
+          songs += `- ${song}\n`;
+        }
+
+        await interaction.reply({
+          ephemeral: true,
+          content: `Songs enqueued: ${songs}`,
+        });
       }
-
-      // HACK: Ugly solution but prints them as bullet points which is handy
-      // but an array would be far cleaner and readable
-      let songs = "";
-
-      for (const song of MusicQueue.queue) {
-        songs += `- ${song}\n`;
-      }
-
-      await interaction.reply({
-        ephemeral: true,
-        content: `Songs enqueued: ${songs}`,
-      });
     } catch (err) {
       console.log(err);
 
