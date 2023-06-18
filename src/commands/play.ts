@@ -27,12 +27,8 @@ export const Play: Command = {
     try {
       const link = options[0].value;
 
-      console.log(MusicQueue.queue); // OUTPUT []
-
       if (MusicQueue.length() < MusicQueue.limit && typeof link === "string") {
         MusicQueue.enqueue(link);
-        console.log(MusicQueue);
-
         await interaction.followUp({
           ephemeral: true,
           content: `"${link}" added to the Queue!`,
