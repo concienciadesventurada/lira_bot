@@ -15,7 +15,7 @@ import {
   joinVoiceChannel,
 } from "@discordjs/voice";
 import interactionCreate from "./listeners/interactionCreate";
-import { createDiscordJSAdapter } from "./adapter";
+import { createDiscordJSAdapter } from "./utils/adapter";
 import { Commands } from "./Commands";
 //import ready from "./listeners/ready";
 

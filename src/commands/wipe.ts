@@ -11,26 +11,22 @@ export const Wipe: Command = {
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
     try {
-      for (let i = 0; i < MusicQueue.length(); i++) {
-        console.log(MusicQueue.peek());
-        MusicQueue.dequeue()
-        if (MusicQueue.isEmpty()) break;
-      }
+      MusicQueue.queue = [];
 
       if (MusicQueue.isEmpty()) {
-        console.log(MusicQueue);
-
         await interaction.followUp({
           ephemeral: true,
-          content: "The list is now empty"
-        })
+          content: "Queue emptied correctly.",
+        });
+      } else {
+        throw new Error("Something went wrong server side while wiping");
       }
     } catch (err) {
       console.log(err);
       await interaction.followUp({
         ephemeral: true,
-        content: "Something went wrong wiping the current list"
-      })
+        content: "Something went wrong wiping the current list",
+      });
     }
-  }
-}
+  },
+};

@@ -11,20 +11,30 @@ export const OnHold: Command = {
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
     try {
+      // TODO: Refactor validation properly
+      if (MusicQueue.isEmpty()) {
+        await interaction.followUp({
+          ephemeral: true,
+          content: "No queued songs."
+        })
+      }
+
+      // HACK: Ugly solution but prints them as bullet points which is handy
+      // but an array would be far cleaner and readable
       let songs = "";
 
       for (const song of MusicQueue.queue) {
-        songs += `${song}\n`;
+        songs += `- ${song}\n`;
       }
 
-      await interaction.followUp({
+      await interaction.reply({
         ephemeral: true,
-        content: `Songs enqueued: \n- ${songs}`,
+        content: `Songs enqueued: ${songs}`,
       });
     } catch (err) {
       console.log(err);
 
-      await interaction.followUp({
+      await interaction.reply({
         ephemeral: true,
         content: "Something went wrong getting the enqueued songs.",
       });
