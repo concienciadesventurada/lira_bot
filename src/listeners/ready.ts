@@ -12,10 +12,11 @@ export default (client: Client): void => {
     try {
       await client.application.commands.set(Commands);
       await playSong(player);
+      console.log("Commands parsed and Audio Resource initialized.")
     } catch (err) {
       console.error(err);
     }
 
-    console.log(`${client.user.username} is online`);
+    console.log(`${client.user.username} is now up and waiting input.`);
   });
 };

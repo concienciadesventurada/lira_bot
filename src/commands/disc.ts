@@ -15,17 +15,24 @@ export const Disc: Command = {
     try {
       if (connection) {
         connection?.destroy();
-        await interaction.reply(
-          "Player has been disconnected from the voice channel"
-        );
+
+        await interaction.followUp({
+          ephemeral: true,
+          content: "Player has been disconnected from the voice channel.",
+        });
       } else {
-        await interaction.reply(
-          "I'm not connected to any voice channel currently."
-        );
+        await interaction.followUp({
+          ephemeral: true,
+          content: "I'm not connected to any voice channel currently.",
+        });
       }
     } catch (err) {
       console.log(err);
-    }
 
+      await interaction.followUp({
+        ephemeral: true,
+        content: "Something went wrong disconnecting.",
+      });
+    }
   },
 };

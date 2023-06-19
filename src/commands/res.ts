@@ -3,25 +3,25 @@ import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { player } from "../utils/player-native";
 
-export const Stop: Command = {
-  name: "stop",
-  description: "Stops the music playing.",
+export const Res: Command = {
+  name: "res",
+  description: "Resumes the music player.",
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
     if (!interaction.inCachedGuild()) return;
 
     try {
-      // DOUBT: Should I unsubscribe when fully stopping?
-      if (AudioPlayerStatus.Playing || AudioPlayerStatus.Idle) {
-        player.stop();
+      if (AudioPlayerStatus.Playing) {
+        player.unpause();
         await interaction.followUp({
           ephemeral: true,
-          content: "Player has been stopped.",
+          content: "Player has been resumed.",
         });
       } else {
+        // FIX: This never triggers, apply proper conditionals
         await interaction.followUp({
           ephemeral: true,
-          content: "Nothing to be stopped since nothing is playing.",
+          content: "Nothing to be resumed.",
         });
       }
     } catch (err) {

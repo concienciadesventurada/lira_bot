@@ -3,12 +3,10 @@ import { Client, GatewayIntentBits } from "discord.js";
 import interactionCreate from "./listeners/interactionCreate";
 import ready from "./listeners/ready";
 
-// TODO: Refactor project structure
 // TODO: Player states
+// BUG: Doesn't disconnect after two /join, states that is in no channel.
 
 const discord_token = process.env.DISCORD_TOKEN;
-
-console.log("Bot is starting...");
 
 const client = new Client({
   intents: [
