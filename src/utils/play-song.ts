@@ -8,9 +8,7 @@ import {
 
 export const playSong = (player: AudioPlayer) => {
   const resource = createAudioResource(
-    // PERF: like the wind...
-    //"https://www.youtube.com/watch?v=zPGf4liO-KQ",
-    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "https://ia903103.us.archive.org/18/items/likethewindrender1/Like%20The%20Wind%20Render%201.ogg",
     { inputType: StreamType.Arbitrary }
   );
   player.play(resource);

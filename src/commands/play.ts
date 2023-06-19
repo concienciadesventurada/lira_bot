@@ -17,22 +17,26 @@ export const Play: Command = {
       name: "link",
       description: "Append a link to be added to the current list",
       type: ApplicationCommandOptionType.String,
+      required: true,
     },
   ],
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
-    // HACK: This is an ugly implementation but it parses the value from the link
-    const options = interaction.options.data;
+    const link = interaction.options.get("link", true);
 
     try {
-      const link = options[0].value;
-
-      if (MusicQueue.length() < MusicQueue.limit && typeof link === "string") {
-        MusicQueue.enqueue(link);
+      if (MusicQueue.length() < MusicQueue.limit && typeof link.value === "string") {
+        MusicQueue.enqueue(link.value);
+        console.log('queue', MusicQueue.queue);
         await interaction.followUp({
           ephemeral: true,
-          content: `"${link}" added to the Queue!`,
+          content: `***${link.value}*** added to the Queue!`,
         });
+      } else {
+        await interaction.followUp({
+          ephemeral: true,
+          content: "Your item couldn't be added to the Queue."
+        })
       }
     } catch (err) {
       console.log(err);

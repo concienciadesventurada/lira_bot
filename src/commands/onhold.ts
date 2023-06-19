@@ -13,28 +13,25 @@ export const OnHold: Command = {
     try {
       // TODO: Refactor validation properly
       if (MusicQueue.isEmpty()) {
-        await interaction.followUp({
-          ephemeral: true,
-          content: "No queued songs.",
-        });
+        await interaction.followUp("No queued songs.");
       } else {
         // HACK: Ugly solution but prints them as bullet points which is handy
         // but an array would be far cleaner and readable
         let songs = "";
 
         for (const song of MusicQueue.queue) {
-          songs += `- ${song}\n`;
+          songs += `**=>** ${song}\n`;
         }
 
-        await interaction.reply({
+        await interaction.followUp({
           ephemeral: true,
-          content: `Songs enqueued: ${songs}`,
+          content: `Songs enqueued:\n\n${songs}`,
         });
       }
     } catch (err) {
       console.log(err);
 
-      await interaction.reply({
+      await interaction.followUp({
         ephemeral: true,
         content: "Something went wrong getting the enqueued songs.",
       });

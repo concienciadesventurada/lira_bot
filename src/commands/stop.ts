@@ -12,7 +12,7 @@ export const Stop: Command = {
 
     try {
       // DOUBT: Should I unsubscribe when fully stopping?
-      if (AudioPlayerStatus.Playing || AudioPlayerStatus.Idle) {
+      if (AudioPlayerStatus.Playing) {
         player.stop();
         await interaction.followUp({
           ephemeral: true,
@@ -21,7 +21,7 @@ export const Stop: Command = {
       } else {
         await interaction.followUp({
           ephemeral: true,
-          content: "Nothing to be stopped since nothing is playing.",
+          content: "Nothing to be stopped.",
         });
       }
     } catch (err) {

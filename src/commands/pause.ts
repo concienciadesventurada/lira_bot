@@ -1,4 +1,3 @@
-// TODO:
 import { AudioPlayerStatus } from "@discordjs/voice";
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
@@ -19,6 +18,7 @@ export const Pause: Command = {
           content: "Player has been paused.",
         });
       } else {
+        // FIX: This never triggers, apply proper conditionals
         await interaction.followUp({
           ephemeral: true,
           content: "Nothing to be paused.",
