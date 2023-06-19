@@ -1,7 +1,7 @@
 import { AudioPlayerStatus } from "@discordjs/voice";
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
-import { player } from "../utils/player-native";
+import { player } from "../utils/player";
 
 export const Res: Command = {
   name: "res",

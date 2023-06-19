@@ -1,17 +1,20 @@
 import {
   AudioPlayer,
   createAudioResource,
-  StreamType,
   entersState,
   AudioPlayerStatus,
 } from "@discordjs/voice";
+import ytdl from "ytdl-core";
 
-export const playSong = (player: AudioPlayer) => {
-  const resource = createAudioResource(
-    "https://ia903103.us.archive.org/18/items/likethewindrender1/Like%20The%20Wind%20Render%201.ogg",
-    { inputType: StreamType.Arbitrary }
-  );
-  player.play(resource);
+export const playSong = async (
+  player: AudioPlayer,
+  url: string = "https://www.youtube.com/watch?v=zPGf4liO-KQ"
+) => {
+  const stream = ytdl(url, { filter: "audioonly"});
+
+  const res = createAudioResource(stream);
+
+  player.play(res);
 
   return entersState(player, AudioPlayerStatus.Playing, 5000);
 };

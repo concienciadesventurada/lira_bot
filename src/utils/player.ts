@@ -1,5 +1,3 @@
-import { Player } from "discord-player";
-import { client } from "../index";
+import { createAudioPlayer } from "@discordjs/voice";
 
-export const discordPlayer = new Player(client);
-
+export const player = createAudioPlayer();

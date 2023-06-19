@@ -22,12 +22,20 @@ export const Play: Command = {
   ],
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
+    if (!interaction.inCachedGuild()) return;
+
     const link = interaction.options.get("link", true);
 
+    // TODO: Append link to queue of AudioResources
+    // TODO: Add override param to omit the queue
+    // TODO: Check connection, channel and subscribe player
+
     try {
-      if (MusicQueue.length() < MusicQueue.limit && typeof link.value === "string") {
+      if (
+        MusicQueue.length() < MusicQueue.limit &&
+        typeof link.value === "string"
+      ) {
         MusicQueue.enqueue(link.value);
-        console.log('queue', MusicQueue.queue);
         await interaction.followUp({
           ephemeral: true,
           content: `***${link.value}*** added to the Queue!`,
@@ -35,8 +43,8 @@ export const Play: Command = {
       } else {
         await interaction.followUp({
           ephemeral: true,
-          content: "Your item couldn't be added to the Queue."
-        })
+          content: "Your item couldn't be added to the Queue.",
+        });
       }
     } catch (err) {
       console.log(err);
