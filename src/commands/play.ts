@@ -71,17 +71,18 @@ export const Play: Command = {
     const { videoDetails: { title } } = await ytdl.getInfo(url);
     const res = createAudioResource(stream);
 
-    MusicQueue.enqueue(res);
+    MusicQueue.enqueue(url);
 
+    // FIX: Overrides instead of add to queue
     try {
-      if (!AudioPlayerStatus.Playing) {
+      if (AudioPlayerStatus.Idle || AudioPlayerStatus.Paused) {
         player.play(res);
 
         return await interaction.followUp({
           ephemeral: true,
           content: `Now playing... [${title}](${url})`,
         });
-      } else {
+      } else if (AudioPlayerStatus.Playing) {
         return await interaction.followUp({
           ephemeral: true,
           content: `Added to the queue... ***${title}***`,

@@ -1,26 +1,23 @@
-// TODO: Would be nice to have multiple lists and pass the type as parameter
-// and only wipe the selected one
-
 import { Client, CommandInteraction } from "discord.js";
 import { Command } from "../interfaces/command";
 import { MusicQueue } from "../lists/queue-list";
+import ytdl from "ytdl-core";
 
+// TODO: Refactor validation properly
 export const OnHold: Command = {
   name: "onhold",
   description: "Returns enqueued songs",
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
     try {
-      // TODO: Refactor validation properly
       if (MusicQueue.isEmpty()) {
         await interaction.followUp("No queued songs.");
       } else {
-        // HACK: Ugly solution but prints them as bullet points which is handy
-        // but an array would be far cleaner and readable
         let songs = "";
 
         for (const song of MusicQueue.queue) {
-          songs += `**=>** ${song}\n`;
+          const {videoDetails: { title }} = await ytdl.getInfo(song);
+          songs += `**=>** [${title}](<${song}>)\n`;
         }
 
         await interaction.followUp({
