@@ -16,21 +16,23 @@ const handleSlashCommand = async (
   const slashCommand = Commands.find((c) => c.name === interaction.commandName);
 
   if (!slashCommand) {
-    interaction.reply({ content: "The slash command you requested doesn't exist, pao ql", ephemeral: true });
-    console.log(`Algún aweonao pidió un comando que no existe.`)
+    interaction.reply({
+      content: "The slash command you requested doesn't exist, pao ql",
+      ephemeral: true,
+    });
+    console.log(`Algún aweonao pidió un comando que no existe.`);
     return;
   }
 
   try {
     await interaction.deferReply();
     slashCommand.run(client, interaction);
-    console.log(`${slashCommand.name} executed correctly`);
-
+    console.log(`[EVENT]: ${slashCommand.name.toUpperCase()} executed correctly.`);
   } catch (err) {
     console.log(err);
 
     await interaction.reply({
-      content: "An error occurred while executing the command",
+      content: "An error occurred while executing the command.",
       ephemeral: true,
     });
   }

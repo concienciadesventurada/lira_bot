@@ -9,6 +9,10 @@ import ready from "./listeners/ready";
 // TODO: Init command to create connection and playlists
 // TODO: Skip command
 // TODO: REST to run containerized or be deployable on hosting services
+// TODO: play.ts
+  // TODO: Append link to queue of AudioResources
+  // TODO: Add override param to omit the queue
+  // TODO: Check connection, channel and subscribe player
 // FIX: Disconnecting while streaming crashes the bot despite error handling
 // in the playSong() function
 

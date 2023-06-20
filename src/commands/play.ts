@@ -1,21 +1,25 @@
-// TODO: Add the player and subscribe it
-// TODO: Make it actually play
-
 import {
   CommandInteraction,
   Client,
   ApplicationCommandOptionType,
 } from "discord.js";
 import { Command } from "../interfaces/command";
+import {
+  AudioPlayerStatus,
+  createAudioResource,
+  getVoiceConnection,
+} from "@discordjs/voice";
+import ytdl from "ytdl-core";
+import { player } from "../utils/player";
 import { MusicQueue } from "../lists/queue-list";
 
 export const Play: Command = {
   name: "play",
-  description: "Plays or queues a link in a playlist",
+  description: "Plays or queues a url in a playlist",
   options: [
     {
-      name: "link",
-      description: "Append a link to be added to the current list",
+      name: "url",
+      description: "Append a url to be added to the current list",
       type: ApplicationCommandOptionType.String,
       required: true,
     },
@@ -24,34 +28,71 @@ export const Play: Command = {
   run: async (client: Client, interaction: CommandInteraction) => {
     if (!interaction.inCachedGuild()) return;
 
-    const link = interaction.options.get("link", true);
+    // TODO: Implement validation
+    const channel = interaction.member.voice.channel;
+    const connection = getVoiceConnection(interaction.guildId);
+    const { value: url } = interaction.options.get("url", true);
 
-    // TODO: Append link to queue of AudioResources
-    // TODO: Add override param to omit the queue
-    // TODO: Check connection, channel and subscribe player
+    if (!channel) {
+      return await interaction.followUp({
+        ephemeral: true,
+        content:
+          "You must be in a voice channel to play or add songs to a playlist.",
+      });
+    }
+    if (!url || typeof url !== "string") {
+      return await interaction.followUp({
+        ephemeral: true,
+        content: "Please provide a valid url to play or add to a playlist.",
+      });
+    }
+    if (!connection) {
+      return await interaction.followUp({
+        ephemeral: true,
+        content:
+          "Please use the command /join or /init to connect me to your current voice channel.",
+      });
+    }
+
+    const isYtLink = ytdl.validateURL(url);
+
+    if (!isYtLink) {
+      return await interaction.followUp({
+        ephemeral: true,
+        content:
+          "The URL you provided is not valid for YouTube and therefore not streamable.",
+      });
+    }
+
+    const stream = ytdl(url, {
+      filter: "audioonly",
+      quality: "highestaudio",
+    });
+    const { videoDetails: { title } } = await ytdl.getInfo(url);
+    const res = createAudioResource(stream);
+
+    MusicQueue.enqueue(res);
 
     try {
-      if (
-        MusicQueue.length() < MusicQueue.limit &&
-        typeof link.value === "string"
-      ) {
-        MusicQueue.enqueue(link.value);
-        await interaction.followUp({
+      if (!AudioPlayerStatus.Playing) {
+        player.play(res);
+
+        return await interaction.followUp({
           ephemeral: true,
-          content: `***${link.value}*** added to the Queue!`,
+          content: `Now playing... [${title}](${url})`,
         });
       } else {
-        await interaction.followUp({
+        return await interaction.followUp({
           ephemeral: true,
-          content: "Your item couldn't be added to the Queue.",
+          content: `Added to the queue... ***${title}***`,
         });
       }
-    } catch (err) {
-      console.log(err);
-
-      await interaction.followUp({
+    } catch (error) {
+      console.log(error);
+      return await interaction.followUp({
         ephemeral: true,
-        content: "You must provide a link",
+        content:
+          "Something went wrong playing and maybe I crashed, but I'll be back... I hope so :anguished:",
       });
     }
   },
