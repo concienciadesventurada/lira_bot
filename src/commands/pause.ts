@@ -1,4 +1,4 @@
-import { AudioPlayerStatus } from "@discordjs/voice";
+import { AudioPlayerStatus, entersState } from "@discordjs/voice";
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { player } from "../utils/player";
@@ -10,6 +10,8 @@ export const Pause: Command = {
   run: async (client: Client, interaction: CommandInteraction) => {
     if (!interaction.inCachedGuild()) return;
 
+    // FIX: This never triggers, apply proper conditionals
+    // FIX: Two or more /pause in a row result in just executes first case
     try {
       if (AudioPlayerStatus.Playing) {
         player.pause();
@@ -17,12 +19,13 @@ export const Pause: Command = {
           ephemeral: true,
           content: "Player has been paused.",
         });
+        return entersState(player, AudioPlayerStatus.Paused, 200);
       } else {
-        // FIX: This never triggers, apply proper conditionals
         await interaction.followUp({
           ephemeral: true,
           content: "Nothing to be paused.",
         });
+        return entersState(player, AudioPlayerStatus.Idle, 200);
       }
     } catch (err) {
       console.log(err);

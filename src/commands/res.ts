@@ -1,7 +1,8 @@
-import { AudioPlayerStatus } from "@discordjs/voice";
+import { AudioPlayerStatus, entersState } from "@discordjs/voice";
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { player } from "../utils/player";
+import { TrackQueue } from "../lists/queue-list";
 
 export const Res: Command = {
   name: "res",
@@ -11,15 +12,31 @@ export const Res: Command = {
     if (!interaction.inCachedGuild()) return;
 
     try {
-      if (AudioPlayerStatus.Playing) {
+      if (AudioPlayerStatus.Paused) {
         player.unpause();
+
         await interaction.followUp({
           ephemeral: true,
           content: "Player has been resumed.",
         });
+
+        return entersState(player, AudioPlayerStatus.Paused, 200);
+      } else if (AudioPlayerStatus.Idle) {
+        const currTrack = TrackQueue.peek();
+
+        if (currTrack) {
+          player.play(currTrack.res);
+
+          await interaction.followUp({
+            ephemeral: true,
+            content: "Player has been resumed.",
+          });
+
+          return entersState(player, AudioPlayerStatus.Playing, 5000);
+        }
       } else {
         // FIX: This never triggers, apply proper conditionals
-        await interaction.followUp({
+        return await interaction.followUp({
           ephemeral: true,
           content: "Nothing to be resumed.",
         });

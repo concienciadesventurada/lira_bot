@@ -10,8 +10,8 @@ import ready from "./listeners/ready";
 // TODO: Skip command
 // TODO: REST to run containerized or be deployable on hosting services
 // TODO: play.ts
-  // TODO: Append link to queue of AudioResources
-  // TODO: Add override param to omit the queue
+  // Append link to queue of AudioResources
+  // Add override param to omit the queue
 
 const discord_token = process.env.DISCORD_TOKEN;
 

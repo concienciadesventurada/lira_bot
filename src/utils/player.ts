@@ -1,3 +1,9 @@
-import { createAudioPlayer } from "@discordjs/voice";
+import { NoSubscriberBehavior, createAudioPlayer } from "@discordjs/voice";
 
-export const player = createAudioPlayer();
+// FIX: Ignores NoSubscriberBehavior
+export const player = createAudioPlayer({
+  behaviors: {
+    noSubscriber: NoSubscriberBehavior.Pause,
+    maxMissedFrames: 24
+  },
+});

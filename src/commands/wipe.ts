@@ -3,7 +3,7 @@
 
 import { Client, CommandInteraction } from "discord.js";
 import { Command } from "../interfaces/command";
-import { MusicQueue } from "../lists/queue-list";
+import { TrackQueue } from "../lists/queue-list";
 
 export const Wipe: Command = {
   name: "wipe",
@@ -11,9 +11,9 @@ export const Wipe: Command = {
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
     try {
-      MusicQueue.queue = [];
+      TrackQueue.queue = [];
 
-      if (MusicQueue.isEmpty()) {
+      if (TrackQueue.isEmpty()) {
         await interaction.followUp({
           ephemeral: true,
           content: "Queue emptied correctly.",

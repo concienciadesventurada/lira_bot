@@ -34,4 +34,8 @@ export class Queue<T> {
   peek(): T | undefined {
     return this.queue[0];
   }
+
+  tail(): T | undefined {
+    return this.queue[this.length() - 1];
+  }
 }

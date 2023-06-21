@@ -1,3 +1,4 @@
 import { Queue } from "../structures/queue";
+import { Track } from "../interfaces/track";
 
-export const MusicQueue = new Queue<string>(1024);
+export const TrackQueue = new Queue<Track>(1024);
