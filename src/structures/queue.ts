@@ -35,6 +35,10 @@ export class Queue<T> {
     return this.queue[0];
   }
 
+  next(): T | undefined {
+    return this.queue[1];
+  }
+
   tail(): T | undefined {
     return this.queue[this.length() - 1];
   }

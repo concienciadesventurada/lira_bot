@@ -12,7 +12,7 @@ export const Skip: Command = {
     if (!interaction.inCachedGuild()) return;
 
     // HACK: Refactor when possible, this ugly af and only half works
-    // BUG: Needs to be skipped twice the first time
+    // BUG: Queue Underflows if only one track in queue
     try {
       player.stop();
 

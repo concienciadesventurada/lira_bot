@@ -4,15 +4,12 @@ import {
   ApplicationCommandOptionType,
 } from "discord.js";
 import { Command } from "../interfaces/command";
-import {
-  AudioPlayerStatus,
-  entersState,
-  getVoiceConnection,
-} from "@discordjs/voice";
+import { getVoiceConnection } from "@discordjs/voice";
 import ytdl from "ytdl-core";
 import { player } from "../utils/player";
 import { TrackQueue } from "../lists/queue-list";
 import { Track } from "../interfaces/track";
+import { AudioPlayerStatus } from "@discordjs/voice";
 
 export const Play: Command = {
   name: "play",
@@ -65,43 +62,59 @@ export const Play: Command = {
       });
     }
 
-    // HACK: Proper refactor, this is ugly af too
+    // [${title}](<${url}>)
     try {
-      const track = await Track.create(url);
-      TrackQueue.enqueue(track);
-      const currTrack = TrackQueue.peek();
-      const nextTrack = TrackQueue.tail();
+      const addedTrack = await Track.create(url);
+      TrackQueue.enqueue(addedTrack);
+      let currTrack = TrackQueue.peek();
 
-      if (typeof currTrack !== "undefined") {
-        if (player.state.status === AudioPlayerStatus.Playing) {
-          if (nextTrack) {
-            await interaction.followUp({
-              ephemeral: true,
-              content: `Added to the queue... ***${nextTrack.title}***`,
-            });
-          }
-        }
-
-        if (currTrack === TrackQueue.peek()) {
+      if (player.state.status === AudioPlayerStatus.Idle) {
+        if (currTrack) {
           player.play(currTrack.res);
+
+          console.log(`1ER LOOP: ${player.state.status}, ${currTrack.title}`)
 
           await interaction.followUp({
             ephemeral: true,
-            content: `Now playing... [${currTrack.title}](${currTrack.url})`,
+            content: `**[1ER LOOP]** Now playing... [**${currTrack.title}**](<${currTrack.url}>).`,
+          });
+        }
+      } else {
+        console.log(`2DO LOOP QUEUE: ${player.state.status}, ${currTrack?.title}`)
+        await interaction.followUp({
+          ephemeral: true,
+          content: `**[2DO LOOP QUEUE]** Added to queue... [**${addedTrack.title}**](<${addedTrack.url}>).`,
+        });
+      }
+
+      player.on("stateChange", async (prev) => {
+        //if (prev.status === AudioPlayerStatus.Idle && player.state.status === AudioPlayerStatus.Playing) {
+        //  console.log(currTrack?.title);
+        //  TrackQueue.dequeue();
+        //}
+
+        if (prev.status === AudioPlayerStatus.Playing && player.state.status === AudioPlayerStatus.Idle) {
+          TrackQueue.dequeue();
+          currTrack = TrackQueue.peek();
+
+          if (currTrack) {
+            player.play(currTrack.res);
+
+            console.log('prevPlaying && currTrack', currTrack?.title);
+
+            await interaction.followUp({
+              ephemeral: true,
+              content: `**[PLAYER PLAY]** Now playing... [**${currTrack.title}**](<${currTrack.url}>).`,
+            });
+          }
+        } else if (player.state.status === AudioPlayerStatus.Idle && TrackQueue.isEmpty()) {
+          await interaction.followUp({
+            ephemeral: true,
+            content: `Empty queue, add songs to play.`,
           });
         }
 
-        if (nextTrack) {
-          if (player.state.status === AudioPlayerStatus.Idle) {
-            TrackQueue.dequeue();
-            player.play(nextTrack.res);
-            TrackQueue.dequeue();
-          }
-        }
-
-        await entersState(player, AudioPlayerStatus.Playing, 5000);
-        console.log("Playing", player.state.status);
-      }
+      });
     } catch (err) {
       console.log(err);
       return await interaction.followUp({
