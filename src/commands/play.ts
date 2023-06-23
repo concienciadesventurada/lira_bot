@@ -10,6 +10,7 @@ import { player } from "../utils/player";
 import { TrackQueue } from "../lists/queue-list";
 import { Track } from "../interfaces/track";
 import { AudioPlayerStatus } from "@discordjs/voice";
+import { formatTime } from "../utils/time";
 
 export const Play: Command = {
   name: "play",
@@ -111,10 +112,10 @@ export const Play: Command = {
             TrackQueue.dequeue();
           }
         }
-        console.log(`[${new Date().getTime()}] PLAY: Successfully executed.`)
+        console.log(`[${formatTime()}] PLAY: Successfully executed.`)
       });
     } catch (err) {
-      console.log(`[${new Date().getTime()}] PLAY: Crashed.`)
+      console.log(`[${formatTime()}] PLAY: Crashed.`)
 
       return await interaction.followUp({
         ephemeral: true,

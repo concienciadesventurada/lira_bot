@@ -1,6 +1,7 @@
 import { Client, CommandInteraction } from "discord.js";
 import { Command } from "../interfaces/command";
 import { TrackQueue } from "../lists/queue-list";
+import { formatTime } from "../utils/time";
 
 // TODO: Refactor validation properly
 export const OnHold: Command = {
@@ -27,7 +28,7 @@ export const OnHold: Command = {
         });
       }
     } catch (err) {
-      console.log(`[${new Date().getTime()}] ONHOLD: Crashed.\n ${err}`);
+      console.log(`[${formatTime()}] ONHOLD: Crashed.\n ${err}`);
 
       await interaction.followUp({
         ephemeral: true,

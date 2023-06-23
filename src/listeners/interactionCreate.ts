@@ -1,5 +1,6 @@
 import { CommandInteraction, Client, Interaction, Events } from "discord.js";
 import { Commands } from "../Commands";
+import { formatTime } from "../utils/time";
 
 export default (client: Client): void => {
   client.on(Events.InteractionCreate, async (interaction: Interaction) => {
@@ -26,8 +27,10 @@ const handleSlashCommand = async (
 
   try {
     await interaction.deferReply();
+
     slashCommand.run(client, interaction);
-    console.log(`[REQ]: ${slashCommand.name.toUpperCase()} requested.`);
+
+    console.log(`[${formatTime()}][REQ]: ${slashCommand.name.toUpperCase()} requested by ${interaction.member?.user.username}.`);
   } catch (err) {
     console.log(err);
 

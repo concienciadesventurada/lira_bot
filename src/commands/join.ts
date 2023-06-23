@@ -3,6 +3,7 @@ import { Command } from "../interfaces/command";
 import { connectToChannel } from "../utils/connect-to-channel";
 import { getVoiceConnection } from "@discordjs/voice";
 import { player } from "../utils/player";
+import { formatTime } from "../utils/time";
 
 export const Join: Command = {
   name: "join",
@@ -32,14 +33,14 @@ export const Join: Command = {
       const connection = await connectToChannel(channel);
       connection.subscribe(player);
 
-      console.log(`[${new Date().getTime()}] JOIN: Successfully executed.`);
+      console.log(`[${formatTime()}] JOIN: Successfully executed.`);
 
       return await interaction.followUp({
         ephemeral: true,
         content: `Now connected to **${channel.name}**.`,
       });
     } catch (err) {
-      console.log(`[${new Date().getTime()}] JOIN: Crashed.`);
+      console.log(`[${formatTime()}] JOIN: Crashed.`);
 
       return await interaction.followUp({
         ephemeral: true,

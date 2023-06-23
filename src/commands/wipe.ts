@@ -1,6 +1,7 @@
 import { Client, CommandInteraction } from "discord.js";
 import { Command } from "../interfaces/command";
 import { TrackQueue } from "../lists/queue-list";
+import { formatTime } from "../utils/time";
 
 export const Wipe: Command = {
   name: "wipe",
@@ -11,7 +12,7 @@ export const Wipe: Command = {
       TrackQueue.queue = [];
 
       if (TrackQueue.isEmpty()) {
-        console.log(`[${new Date().getTime()}] WIPE: Crashed.`);
+        console.log(`[${formatTime()}] WIPE: executed correctly.`);
 
         return await interaction.followUp({
           ephemeral: true,
@@ -21,7 +22,7 @@ export const Wipe: Command = {
         throw new Error("Something went wrong server side while wiping");
       }
     } catch (err) {
-      console.log(`[${new Date().getTime()}] SKIP: Crashed.`);
+      console.log(`[${formatTime()}] WIPE: crashed.`);
 
       await interaction.followUp({
         ephemeral: true,

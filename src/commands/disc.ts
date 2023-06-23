@@ -1,6 +1,7 @@
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { getVoiceConnection } from "@discordjs/voice";
+import { formatTime } from "../utils/time";
 
 export const Disc: Command = {
   name: "disc",
@@ -26,9 +27,9 @@ export const Disc: Command = {
         });
       }
 
-      console.log(`[${new Date().getTime()}] DISC: Successfully executed.`);
+      console.log(`[${formatTime()}] DISC: Successfully executed.`);
     } catch (err) {
-      console.log(`[${new Date().getTime()}] DISC: Crashed.\n ${err}`);
+      console.log(`[${formatTime()}] DISC: Crashed.\n ${err}`);
 
       return await interaction.followUp({
         ephemeral: true,

@@ -8,6 +8,7 @@ import { Disc } from "./commands/disc";
 import { Pause } from "./commands/pause";
 import { Res } from "./commands/res";
 import { Skip } from "./commands/skip";
+import { Next } from "./commands/next";
 
 // TODO: Implement proper fs search and return an array
 export const Commands: Command[] = [
@@ -19,5 +20,6 @@ export const Commands: Command[] = [
   Disc,
   Pause,
   Res,
-  Skip
+  Skip,
+  Next
 ];

@@ -5,7 +5,7 @@ export class Track {
   public url: string;
   public res: AudioResource;
   public stream: any; // FIX: should be internal.Readable, errors with internal
-  public title: string | Promise<string>; // DOUBT: Fetch metadata async?
+  public title: string;
 
   constructor(url: string, title: string) {
     this.url = url;

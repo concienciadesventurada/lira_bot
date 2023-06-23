@@ -2,6 +2,7 @@ import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { TrackQueue } from "../lists/queue-list";
 import { player } from "../utils/player";
+import { formatTime } from "../utils/time";
 
 export const Skip: Command = {
   name: "skip",
@@ -11,7 +12,6 @@ export const Skip: Command = {
   run: async (client: Client, interaction: CommandInteraction) => {
     if (!interaction.inCachedGuild()) return;
 
-    // HACK: Refactor when possible, this ugly af and only half works
     try {
       player.stop();
 
@@ -21,7 +21,7 @@ export const Skip: Command = {
       if (!nextTrack) {
         TrackQueue.dequeue();
 
-        console.log(`[${new Date().getTime()}] SKIP: Successfully executed.`);
+        console.log(`[${formatTime()}] SKIP: Successfully executed.`);
 
         return await interaction.followUp({
           ephemeral: true,
@@ -33,7 +33,7 @@ export const Skip: Command = {
         player.play(currTrack.res);
         TrackQueue.dequeue();
 
-        console.log(`[${new Date().getTime()}] SKIP: Successfully executed.`);
+        console.log(`[${formatTime()}] SKIP: Successfully executed.`);
 
         return await interaction.followUp({
           ephemeral: true,
@@ -41,7 +41,7 @@ export const Skip: Command = {
         });
       }
     } catch (err) {
-      console.log(`[${new Date().getTime()}] SKIP: Crashed.`);
+      console.log(`[${formatTime()}] SKIP: Crashed.`);
 
       return await interaction.followUp({
         ephemeral: true,

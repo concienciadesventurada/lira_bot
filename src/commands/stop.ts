@@ -2,6 +2,7 @@ import { AudioPlayerStatus } from "@discordjs/voice";
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { player } from "../utils/player";
+import { formatTime } from "../utils/time";
 
 export const Stop: Command = {
   name: "stop",
@@ -22,7 +23,7 @@ export const Stop: Command = {
         });
       }
     } catch (err) {
-      console.log(`[${new Date().getTime()}] STOP: Crashed.\n ${err}`);
+      console.log(`[${formatTime()}] STOP: Crashed.\n ${err}`);
 
       return await interaction.followUp({
         ephemeral: true,

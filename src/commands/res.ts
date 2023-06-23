@@ -3,6 +3,7 @@ import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { player } from "../utils/player";
 import { TrackQueue } from "../lists/queue-list";
+import { formatTime } from "../utils/time";
 
 export const Res: Command = {
   name: "res",
@@ -18,14 +19,14 @@ export const Res: Command = {
           content: "Player has been resumed.",
         });
 
-        console.log(`[${new Date().getTime()}] RES: Successfully executed.`);
+        console.log(`[${formatTime()}] RES: Successfully executed.`);
 
         return await entersState(player, AudioPlayerStatus.Paused, 200);
       } else {
         const currTrack = TrackQueue.peek();
 
         if (!currTrack) {
-          console.log(`[${new Date().getTime()}] RES: Successfully executed.`);
+          console.log(`[${formatTime()}] RES: Successfully executed.`);
 
           return await interaction.followUp({
             ephemeral: true,
@@ -40,11 +41,11 @@ export const Res: Command = {
           });
 
           await entersState(player, AudioPlayerStatus.Playing, 5000);
-          console.log(`[${new Date().getTime()}] RES: Successfully executed.`);
+          console.log(`[${formatTime()}] RES: Successfully executed.`);
         }
       }
     } catch (err) {
-      console.log(`[${new Date().getTime()}] RES: Crashed.`);
+      console.log(`[${formatTime()}] RES: Crashed.`);
 
       return await interaction.followUp({
         ephemeral: true,

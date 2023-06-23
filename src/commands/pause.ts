@@ -2,6 +2,7 @@ import { AudioPlayerStatus, entersState } from "@discordjs/voice";
 import { CommandInteraction, Client } from "discord.js";
 import { Command } from "../interfaces/command";
 import { player } from "../utils/player";
+import { formatTime } from "../utils/time";
 
 export const Pause: Command = {
   name: "pause",
@@ -10,10 +11,8 @@ export const Pause: Command = {
   run: async (client: Client, interaction: CommandInteraction) => {
     if (!interaction.inCachedGuild()) return;
 
-    // FIX: This never triggers, apply proper conditionals
-    // FIX: Two or more /pause in a row result in just executes first case
     try {
-      if (AudioPlayerStatus.Playing) {
+      if (player.state.status === AudioPlayerStatus.Playing) {
         player.pause();
 
         await interaction.followUp({
@@ -31,7 +30,7 @@ export const Pause: Command = {
         return entersState(player, AudioPlayerStatus.Idle, 200);
       }
     } catch (err) {
-      console.log(`[${new Date().getTime()}] PAUSE: Crashed.\n ${err}`);
+      console.log(`[${formatTime()}] PAUSE: Crashed.\n ${err}`);
 
       return await interaction.followUp({
         ephemeral: true,
