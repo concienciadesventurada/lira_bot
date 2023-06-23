@@ -9,9 +9,7 @@ export const OnHold: Command = {
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
     try {
-      if (TrackQueue.isEmpty()) {
-        await interaction.followUp("No queued songs.");
-      } else {
+      if (!TrackQueue.isEmpty()) {
         let songs = "";
 
         for (const song of TrackQueue.queue) {
@@ -22,9 +20,14 @@ export const OnHold: Command = {
           ephemeral: true,
           content: `Songs enqueued:\n\n${songs}`,
         });
+      } else {
+        return await interaction.followUp({
+          ephemeral: true,
+          content: "No queued songs.",
+        });
       }
     } catch (err) {
-      console.log(err);
+      console.log(`[${new Date().getTime()}] ONHOLD: Crashed.\n ${err}`);
 
       await interaction.followUp({
         ephemeral: true,

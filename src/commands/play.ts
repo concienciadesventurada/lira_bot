@@ -62,61 +62,60 @@ export const Play: Command = {
       });
     }
 
-    // [${title}](<${url}>)
+    // HACK: Proper refactor, this ugly af, `stateChange` already gives me access
+    // to previous states, so its redundant, but if not, loops until queue underflow
     try {
       const addedTrack = await Track.create(url);
       TrackQueue.enqueue(addedTrack);
+
       let currTrack = TrackQueue.peek();
 
       if (player.state.status === AudioPlayerStatus.Idle) {
         if (currTrack) {
           player.play(currTrack.res);
 
-          console.log(`1ER LOOP: ${player.state.status}, ${currTrack.title}`)
+          console.log(`[${new Date().getTime()}]: Playing... ${currTrack.title}`)
 
           await interaction.followUp({
-            ephemeral: true,
-            content: `**[1ER LOOP]** Now playing... [**${currTrack.title}**](<${currTrack.url}>).`,
+            ephemeral: false,
+            content: `Now playing... [**${currTrack.title}**](<${currTrack.url}>).`,
           });
         }
       } else {
-        console.log(`2DO LOOP QUEUE: ${player.state.status}, ${currTrack?.title}`)
         await interaction.followUp({
           ephemeral: true,
-          content: `**[2DO LOOP QUEUE]** Added to queue... [**${addedTrack.title}**](<${addedTrack.url}>).`,
+          content: `Added to queue... [**${addedTrack.title}**](<${addedTrack.url}>).`,
         });
       }
 
       player.on("stateChange", async (prev) => {
-        //if (prev.status === AudioPlayerStatus.Idle && player.state.status === AudioPlayerStatus.Playing) {
-        //  console.log(currTrack?.title);
-        //  TrackQueue.dequeue();
-        //}
+        const nextTrack = TrackQueue.next();
 
-        if (prev.status === AudioPlayerStatus.Playing && player.state.status === AudioPlayerStatus.Idle) {
-          TrackQueue.dequeue();
-          currTrack = TrackQueue.peek();
+        if (
+          prev.status === AudioPlayerStatus.Playing &&
+          player.state.status === AudioPlayerStatus.Idle
+        ) {
+          if (nextTrack) {
+            TrackQueue.dequeue();
+            currTrack = TrackQueue.peek();
 
-          if (currTrack) {
-            player.play(currTrack.res);
+            if (currTrack) {
+              player.play(currTrack.res);
 
-            console.log('prevPlaying && currTrack', currTrack?.title);
-
-            await interaction.followUp({
-              ephemeral: true,
-              content: `**[PLAYER PLAY]** Now playing... [**${currTrack.title}**](<${currTrack.url}>).`,
-            });
+              await interaction.followUp({
+                ephemeral: false,
+                content: `Now playing... [**${currTrack.title}**](<${currTrack.url}>).`,
+              });
+            }
+          } else if (!nextTrack && TrackQueue.length() === 1) {
+            TrackQueue.dequeue();
           }
-        } else if (player.state.status === AudioPlayerStatus.Idle && TrackQueue.isEmpty()) {
-          await interaction.followUp({
-            ephemeral: true,
-            content: `Empty queue, add songs to play.`,
-          });
         }
-
+        console.log(`[${new Date().getTime()}] PLAY: Successfully executed.`)
       });
     } catch (err) {
-      console.log(err);
+      console.log(`[${new Date().getTime()}] PLAY: Crashed.`)
+
       return await interaction.followUp({
         ephemeral: true,
         content:

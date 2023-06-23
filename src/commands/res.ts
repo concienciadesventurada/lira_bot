@@ -9,10 +9,8 @@ export const Res: Command = {
   description: "Resumes the music player.",
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
-    if (!interaction.inCachedGuild()) return;
-
     try {
-      if (AudioPlayerStatus.Paused) {
+      if (player.state.status === AudioPlayerStatus.Paused) {
         player.unpause();
 
         await interaction.followUp({
@@ -20,11 +18,20 @@ export const Res: Command = {
           content: "Player has been resumed.",
         });
 
-        return entersState(player, AudioPlayerStatus.Paused, 200);
-      } else if (AudioPlayerStatus.Idle) {
+        console.log(`[${new Date().getTime()}] RES: Successfully executed.`);
+
+        return await entersState(player, AudioPlayerStatus.Paused, 200);
+      } else {
         const currTrack = TrackQueue.peek();
 
-        if (currTrack) {
+        if (!currTrack) {
+          console.log(`[${new Date().getTime()}] RES: Successfully executed.`);
+
+          return await interaction.followUp({
+            ephemeral: true,
+            content: "Nothing to be resumed.",
+          });
+        } else {
           player.play(currTrack.res);
 
           await interaction.followUp({
@@ -32,17 +39,17 @@ export const Res: Command = {
             content: "Player has been resumed.",
           });
 
-          return entersState(player, AudioPlayerStatus.Playing, 5000);
+          await entersState(player, AudioPlayerStatus.Playing, 5000);
+          console.log(`[${new Date().getTime()}] RES: Successfully executed.`);
         }
-      } else {
-        // FIX: This never triggers, apply proper conditionals
-        return await interaction.followUp({
-          ephemeral: true,
-          content: "Nothing to be resumed.",
-        });
       }
     } catch (err) {
-      console.log(err);
+      console.log(`[${new Date().getTime()}] RES: Crashed.`);
+
+      return await interaction.followUp({
+        ephemeral: true,
+        content: "Something went wrong resuming and I crashed :woozy_face:...",
+      });
     }
   },
 };

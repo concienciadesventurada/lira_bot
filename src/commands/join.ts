@@ -32,12 +32,19 @@ export const Join: Command = {
       const connection = await connectToChannel(channel);
       connection.subscribe(player);
 
+      console.log(`[${new Date().getTime()}] JOIN: Successfully executed.`);
+
       return await interaction.followUp({
         ephemeral: true,
         content: `Now connected to **${channel.name}**.`,
       });
     } catch (err) {
-      console.log(err);
+      console.log(`[${new Date().getTime()}] JOIN: Crashed.`);
+
+      return await interaction.followUp({
+        ephemeral: true,
+        content: "Something went wrong connecting to your voice channel and I crashed :sob:...",
+      });
     }
   },
 };

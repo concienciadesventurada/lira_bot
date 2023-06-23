@@ -27,7 +27,7 @@ const handleSlashCommand = async (
   try {
     await interaction.deferReply();
     slashCommand.run(client, interaction);
-    console.log(`[EVENT]: ${slashCommand.name.toUpperCase()} executed correctly.`);
+    console.log(`[REQ]: ${slashCommand.name.toUpperCase()} requested.`);
   } catch (err) {
     console.log(err);
 

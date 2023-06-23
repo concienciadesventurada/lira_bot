@@ -12,26 +12,37 @@ export const Skip: Command = {
     if (!interaction.inCachedGuild()) return;
 
     // HACK: Refactor when possible, this ugly af and only half works
-    // BUG: Queue Underflows if only one track in queue
     try {
       player.stop();
 
-      const nextTrack = TrackQueue.peek();
+      let currTrack = TrackQueue.peek();
+      const nextTrack = TrackQueue.next();
 
       if (!nextTrack) {
+        TrackQueue.dequeue();
+
+        console.log(`[${new Date().getTime()}] SKIP: Successfully executed.`);
+
         return await interaction.followUp({
           ephemeral: true,
-          content: "There are no songs left in the queue.",
+          content: `Skipped [${currTrack?.title}](<${currTrack?.url}>). There are no songs left in the queue...`,
+        });
+      } else {
+        currTrack = nextTrack;
+
+        player.play(currTrack.res);
+        TrackQueue.dequeue();
+
+        console.log(`[${new Date().getTime()}] SKIP: Successfully executed.`);
+
+        return await interaction.followUp({
+          ephemeral: true,
+          content: `Skipped previous track. Now playing... [${currTrack.title}](${currTrack.url}).`,
         });
       }
-      player.play(nextTrack.res);
-      TrackQueue.dequeue();
-
-      return await interaction.followUp({
-        ephemeral: true,
-        content: `Skipped previous track. Now playing... [${nextTrack.title}](${nextTrack.url})`,
-      });
     } catch (err) {
+      console.log(`[${new Date().getTime()}] SKIP: Crashed.`);
+
       return await interaction.followUp({
         ephemeral: true,
         content: "There are no songs left in the queue... Queue underflow.",

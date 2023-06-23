@@ -11,7 +11,6 @@ export const Disc: Command = {
 
     const connection = getVoiceConnection(interaction.guildId);
 
-    // DOUBT: Should I unsubscribe the player when disconnecting?
     try {
       if (connection) {
         connection?.destroy();
@@ -26,12 +25,14 @@ export const Disc: Command = {
           content: "I'm not connected to any voice channel currently.",
         });
       }
-    } catch (err) {
-      console.log(err);
 
-      await interaction.followUp({
+      console.log(`[${new Date().getTime()}] DISC: Successfully executed.`);
+    } catch (err) {
+      console.log(`[${new Date().getTime()}] DISC: Crashed.\n ${err}`);
+
+      return await interaction.followUp({
         ephemeral: true,
-        content: "Something went wrong disconnecting.",
+        content: "Something went wrong disconnecting and I crashed :grimacing:.",
       });
     }
   },

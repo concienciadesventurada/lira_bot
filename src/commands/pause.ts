@@ -15,20 +15,28 @@ export const Pause: Command = {
     try {
       if (AudioPlayerStatus.Playing) {
         player.pause();
+
         await interaction.followUp({
           ephemeral: true,
           content: "Player has been paused.",
         });
+
         return entersState(player, AudioPlayerStatus.Paused, 200);
       } else {
         await interaction.followUp({
           ephemeral: true,
           content: "Nothing to be paused.",
         });
+
         return entersState(player, AudioPlayerStatus.Idle, 200);
       }
     } catch (err) {
-      console.log(err);
+      console.log(`[${new Date().getTime()}] PAUSE: Crashed.\n ${err}`);
+
+      return await interaction.followUp({
+        ephemeral: true,
+        content: "An error occured while /pause and I crashed :cold_sweat:...",
+      });
     }
   },
 };

@@ -1,6 +1,3 @@
-// TODO: Would be nice to have multiple lists and pass the type as parameter
-// and only wipe the selected one
-
 import { Client, CommandInteraction } from "discord.js";
 import { Command } from "../interfaces/command";
 import { TrackQueue } from "../lists/queue-list";
@@ -14,7 +11,9 @@ export const Wipe: Command = {
       TrackQueue.queue = [];
 
       if (TrackQueue.isEmpty()) {
-        await interaction.followUp({
+        console.log(`[${new Date().getTime()}] WIPE: Crashed.`);
+
+        return await interaction.followUp({
           ephemeral: true,
           content: "Queue emptied correctly.",
         });
@@ -22,7 +21,8 @@ export const Wipe: Command = {
         throw new Error("Something went wrong server side while wiping");
       }
     } catch (err) {
-      console.log(err);
+      console.log(`[${new Date().getTime()}] SKIP: Crashed.`);
+
       await interaction.followUp({
         ephemeral: true,
         content: "Something went wrong wiping the current list",

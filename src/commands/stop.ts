@@ -8,24 +8,27 @@ export const Stop: Command = {
   description: "Stops the music playing.",
   // @ts-ignore
   run: async (client: Client, interaction: CommandInteraction) => {
-    if (!interaction.inCachedGuild()) return;
-
     try {
-      // DOUBT: Should I unsubscribe when fully stopping?
-      if (AudioPlayerStatus.Playing) {
+      if (player.state.status === AudioPlayerStatus.Playing) {
         player.stop();
-        await interaction.followUp({
+        return await interaction.followUp({
           ephemeral: true,
           content: "Player has been stopped.",
         });
       } else {
-        await interaction.followUp({
+        return await interaction.followUp({
           ephemeral: true,
           content: "Nothing to be stopped.",
         });
       }
     } catch (err) {
-      console.log(err);
+      console.log(`[${new Date().getTime()}] STOP: Crashed.\n ${err}`);
+
+      return await interaction.followUp({
+        ephemeral: true,
+        content:
+          "Something went wrong while stopping and I crashed :grimacing:.",
+      });
     }
   },
 };
