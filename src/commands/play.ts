@@ -65,6 +65,7 @@ export const Play: Command = {
 
     // HACK: Proper refactor, this ugly af, `stateChange` already gives me access
     // to previous states, so its redundant, but if not, loops until queue underflow
+    // BUG: Still crashes and doesn't catch the error.
     try {
       const addedTrack = await Track.create(url);
       TrackQueue.enqueue(addedTrack);
@@ -75,7 +76,7 @@ export const Play: Command = {
         if (currTrack) {
           player.play(currTrack.res);
 
-          console.log(`[${new Date().getTime()}]: Playing... ${currTrack.title}`)
+          console.log(`[${formatTime()}]: Playing... ${currTrack.title}`);
 
           await interaction.followUp({
             ephemeral: false,
@@ -112,10 +113,10 @@ export const Play: Command = {
             TrackQueue.dequeue();
           }
         }
-        console.log(`[${formatTime()}] PLAY: Successfully executed.`)
+        console.log(`[${formatTime()}] PLAY: Successfully executed.`);
       });
     } catch (err) {
-      console.log(`[${formatTime()}] PLAY: Crashed.`)
+      console.log(`[${formatTime()}] PLAY: Crashed.`);
 
       return await interaction.followUp({
         ephemeral: true,
